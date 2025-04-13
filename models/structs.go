@@ -3,9 +3,6 @@ package models
 type Card struct {
     ID              int `json:"id"`
     NAME            string `json:"name"`
-    RARITY          int `json:"rarity"`
-    COST            int `json:"cost"`
-	OFFICIAL        int `json:"official"`
 }
 
 type Attrs struct {
@@ -22,7 +19,7 @@ type Types struct {
 
 type Stat struct {
     MAX_LEVEL       int
-	HP_INIT         int
+    HP_INIT         int
     HP_MAX          int
     HP_GROWTH       int
     ATK_INIT        int
@@ -86,6 +83,9 @@ type SuperAwakenings struct {
 }
 
 type KeyValues struct {
+    RARITY          int
+    COST            int
+    OFFICIAL        int
     ASSIST          int
     EXPAND          int
     BASE_ID         int
@@ -94,4 +94,76 @@ type KeyValues struct {
     COLLAB_ID       int
     KEYWORDS        string
     ORB_BGM_ID      int
+}
+
+type QueryResults struct {
+    ID                          int `json:"id"`
+    NAME                        string `json:"name"`
+    ATTR_1                      int `json:"attr_1"`
+    ATTR_2                      int `json:"attr_2"`
+    ATTR_3                      int `json:"attr_3"`
+    TYPE_1                      int `json:"type_1"`
+    TYPE_2                      int `json:"type_2"`
+    TYPE_3                      int `json:"type_3"`
+    RARITY                      int `json:"rarity"`
+    COST                        int `json:"cost"`
+    IS_ULT_EVO                  int `json:"ult_evo"`
+    MAX_LEVEL                   int `json:"max_level"`
+    FUSE_EXP                    int `json:"fuse_exp"`
+    COIN_VALUE                  int `json:"coin_value"`
+    OFFICIAL                    int `json:"official"`
+    HP_INIT                     int `json:"hp_init"`
+    HP_MAX                      int `json:"hp_max"`
+    HP_GROWTH                   int `json:"hp_growth"`
+    ATK_INIT                    int `json:"atk_init"`
+    ATK_MAX                     int `json:"atk_max"`
+    ATK_GROWTH                  int `json:"atk_growth"`
+    RCV_INIT                    int `json:"rcv_init"`
+    RCV_MAX                     int `json:"rcv_max"`
+    RCV_GROWTH                  int `json:"rcv_growth"`
+    MAX_EXP                     int `json:"max_exp"`
+    EXP_GROWTH                  int `json:"exp_growth"`
+    ACTIVE_SKILL                int `json:"active"`
+    LEADER_SKILL                int `json:"leader"`
+    EVOLVED_FROM                int `json:"from"`
+    EVOLVE_MAT_1                int `json:"mat_1"`
+    EVOLVE_MAT_2                int `json:"mat_2"`
+    EVOLVE_MAT_3                int `json:"mat_3"`
+    EVOLVE_MAT_4                int `json:"mat_4"`
+    EVOLVE_MAT_5                int `json:"mat_5"`
+    DEVOLVE_MAT_1               int `json:"dmat_1"`
+    DEVOLVE_MAT_2               int `json:"dmat_2"`
+    DEVOLVE_MAT_3               int `json:"dmat_3"`
+    DEVOLVE_MAT_4               int `json:"dmat_4"`
+    DEVOLVE_MAT_5               int `json:"dmat_5"`
+    AWAKENINGS                  int `json:"awkns"`
+    AWAKENING_1                 int `json:"awkn_1"`
+    AWAKENING_2                 int `json:"awkn_2"`
+    AWAKENING_3                 int `json:"awkn_3"`
+    AWAKENING_4                 int `json:"awkn_4"`
+    AWAKENING_5                 int `json:"awkn_5"`
+    AWAKENING_6                 int `json:"awkn_6"`
+    AWAKENING_7                 int `json:"awkn_7"`
+    AWAKENING_8                 int `json:"awkn_8"`
+    AWAKENING_9                 int `json:"awkn_9"`
+    SUPER_AWAKENINGS            int `json:"super_awkns"`
+    SUPER_AWAKENING_1           int `json:"s_awkn_1"`
+    SUPER_AWAKENING_2           int `json:"s_awkn_2"`
+    SUPER_AWAKENING_3           int `json:"s_awkn_3"`
+    SUPER_AWAKENING_4           int `json:"s_awkn_4"`
+    SUPER_AWAKENING_5           int `json:"s_awkn_5"`
+    SUPER_AWAKENING_6           int `json:"s_awkn_6"`
+    SUPER_AWAKENING_7           int `json:"s_awkn_7"`
+    SUPER_AWAKENING_8           int `json:"s_awkn_8"`
+    SUPER_AWAKENING_9           int `json:"s_awkn_9"`
+    SUPER_AWAKENING_10          int `json:"s_awkn_10"`
+    CAN_ASSIST                  int `json:"assist"`
+    CAN_EXPAND                  int `json:"expand"`
+    BASE_ID                     int `json:"base"`
+    GROUP_ID                    int `json:"group"`
+    MONSTER_POINTS              int `json:"mp"`
+    COLLAB_ID                   int `json:"collab"`
+    SEARCH_KEYWORDS             string `json:"keywords"`
+    LIMIT_BREAK_STAT_PERCENT    int `json:"limit_break"`
+    ORBSKIN_BGM_ID              int `json:"orb_bgm_id"`
 }

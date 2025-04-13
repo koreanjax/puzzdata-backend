@@ -2,12 +2,13 @@ package main
 
 import(
     "os"
-    "database/sql"
     "fmt"
     "log"
-    handlers "puzzdata-backend/handlers"
+    "puzzdata-backend/handlers"
     "net/http"
+    "github.com/rs/cors"
     "github.com/gorilla/mux"
+    "github.com/jmoiron/sqlx"
     _ "github.com/go-sql-driver/mysql"
 )
 
@@ -26,7 +27,7 @@ func main() {
     connString := fmt.Sprintf("%s:%s@/%s", USER, PASSWORD, DBNAME)
 
     // Connect to the database using the connection string
-    db, err := sql.Open("mysql", connString)
+    db, err := sqlx.Open("mysql", connString)
     log.Println(db)
     if err != nil {
         log.Println(err.Error())
@@ -46,6 +47,11 @@ func main() {
     searchRouter := r.PathPrefix("/search").Subrouter()
     searchRouter.HandleFunc("/id={id:[0-9]+}", ch.IdHandler).Methods(http.MethodGet)
     searchRouter.HandleFunc("/name={name}", ch.NameHandler).Methods(http.MethodGet)
+    
+    cardRouter := r.PathPrefix("/card/").Subrouter()
+    cardRouter.HandleFunc("/id={id:[0-9]+}", ch.CardHandler).Methods(http.MethodGet)
 
-    log.Fatal(http.ListenAndServe(":8080", r))
+    handler := cors.Default().Handler(r)
+
+    log.Fatal(http.ListenAndServe(":8080", handler))
 }
