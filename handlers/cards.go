@@ -2,6 +2,7 @@ package handlers
 
 import (
     "log"
+    "fmt"
     "encoding/json"
     "net/http"
     "puzzdata-backend/models"
@@ -14,6 +15,8 @@ type Cards struct {
     l *log.Logger
     db *sqlx.DB
 }
+
+const redacted = `"%*****%"`
 
 func NewCards(l *log.Logger, db *sqlx.DB) *Cards {
     return &Cards{l, db}
@@ -30,9 +33,9 @@ func (c *Cards) IdHandler(w http.ResponseWriter, r *http.Request) {
 
     id := vars["id"]
 
-    q := `SELECT id, name FROM card WHERE id < 100000 AND id=?;`
+    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND id=%s;`, redacted, id)
 
-    results, err := c.db.Query(q, id)
+    results, err := c.db.Query(q)
     if err != nil  {
         c.l.Println("failed to fetch from DB", err)
         return
@@ -62,10 +65,10 @@ func (c *Cards) NameHandler(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     name := vars["name"]
 
-    q := `SELECT id, name FROM card WHERE id < 100000 AND name LIKE ?;`
-    queryFormat := "%" + name + "%"
+    queryFormat := `"%` + name + `%"`
+    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND name LIKE %s;`, redacted, queryFormat)
 
-    results, err := c.db.Query(q, queryFormat)
+    results, err := c.db.Query(q)
 
     if err != nil  {
         c.l.Println("failed to fetch from DB", err)
