@@ -16,7 +16,7 @@ import(
 const (
     USER = "root"
     PASSWORD = "*****"
-    DBNAME = "test"
+    DBNAME = "test2"
 )
 
 func main() {

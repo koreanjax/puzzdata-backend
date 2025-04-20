@@ -108,5 +108,4 @@ func (c *Cards) CardHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     json.NewEncoder(w).Encode(queryResults)
-
 }
