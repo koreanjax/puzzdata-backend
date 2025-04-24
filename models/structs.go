@@ -131,3 +131,14 @@ type QueryResults struct {
     SYNC_AWAKENING              int `json:"sync_awkn"`
     SYNC_MATS                   string `json:"sync_mats"`
 }
+
+type SkillResults struct {
+    ID              int `json:"id"`
+    NAME            string `json:"name"`
+    TEXT            string `json:"text"`
+    SKILL_TYPE      int `json:"skill_type"`
+    SKILL_MAX_LEVEL int `json:"skill_max_level"`
+    SKILL_INIT_CD   int `json:"skill_init_cd"`
+    UNKNOWN_1       string `json:"unknown_1"`
+    PARAMETERS      string `json:"parameters"`
+}

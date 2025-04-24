@@ -38,6 +38,7 @@ func main() {
 
     // Create the handlers
     ch := handlers.NewCards(l, db)
+    sh := handlers.NewSkills(l, db)
 
     // Create a new serve mux and register the handlers
     r := mux.NewRouter()
@@ -50,6 +51,9 @@ func main() {
     
     cardRouter := r.PathPrefix("/card/").Subrouter()
     cardRouter.HandleFunc("/id={id:[0-9]+}", ch.CardHandler).Methods(http.MethodGet)
+     
+    skillRouter := r.PathPrefix("/skill/").Subrouter()
+    skillRouter.HandleFunc("/id={id:[0-9]+}", sh.SkillHandler).Methods(http.MethodGet)
 
     handler := cors.Default().Handler(r)
 
