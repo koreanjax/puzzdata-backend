@@ -1,0 +1,1502 @@
+1 - Fire
+2 - Water
+4 - Wood
+8 - Light
+16 - Dark
+32 - Heal
+64 - Jammer
+128 - Poison
+256 - Mortal Poison
+512 - Bombs
+
+skill data
+
+0 - Mass Elemental Damage
+two params
+- element 0-4
+- atk percent 100(1000 = 10x ATK) 
+
+1 - Fixed Mass Damage
+two params
+- element 0-4
+- damage value (1000 = 1000 Fixed Damage)
+
+2 - Damage = Single Target Damage
+one param
+- atk percent
+
+3 - Fxied Damage Reduction
+two params
+- turn count
+- reduction percent
+
+4 - Poison enemies
+one param
+- atk percent (poison value)
+
+5 - Change The World
+one param
+- seconds
+
+6 - Gravity
+one param
+- percent
+
+7 - Recover by RCV%
+one param
+- rcv percent
+
+8 - Recover by Value
+one param
+- hp value
+
+9 - Single Orb change
+two params
+- element from 0-5
+- element to 0-5
+
+10 - Refresh
+no param
+
+LS
+11 - ATK multiplier for Attr
+two params
+- element 0-4
+- atk percent
+
+LS
+12 - Inflicts bonus attack
+one param
+- atk percent
+
+LS
+13 - Heal HP by RCV
+one param
+- rcv percent
+
+LS
+14 - Resolve
+two params
+- hp percent value if greater
+- reduction percent
+
+LS
+15 - Bonus orb move time
+one param
+- seconds * 100
+
+LS
+16 - Fixed Damage Reduction
+one param
+- reduction percent
+
+LS
+17 - Elemental Damage Reduction
+two params
+- element 0-4
+- reduction percent
+
+18 - Delay
+one param
+- turn count
+
+19 - DEF reduction
+two params
+- turn count
+- reduction percent
+
+20 - Double Orb Change
+four params
+- element from 0-5
+- element to 0-5
+- element from 0-5
+- element to 0-5
+
+21 - Elemental Damage Reduction
+three params
+- element 0-4
+- turn count
+- reduction percent
+
+LS
+22 - ATK multiplier for Type
+two params
+- type
+- atk percent
+
+LS
+23 - HP multiplier for Type
+two params
+- type
+- hp percent
+
+LS
+24 - RCV multiplier for Type
+two params
+- type
+- rcv percent
+
+LS
+26 - ATK multiplier for all cards
+one param
+- atk percent
+
+LS
+28 - ATK and RCV multiplier for Attr
+two params
+- element 0-4
+- atk and rcv percent
+
+LS
+29 - All Stat multiplier for Attr
+two params
+- element 0-4
+- all stat percent
+
+LS
+30 - HP multiplier for Two Types
+three params
+- type
+- type
+- hp percent
+
+LS
+31 - ATK multiplier for Two Types
+three params
+- type
+- type
+- atk percent
+
+LS
+33 - Taiko Drumming Sound
+no params
+
+35 - Heal HP based on Damage dealt
+two params
+- atk percent
+- % of damage healed
+
+LS
+36 - Double Elemental Damage Reduction
+three params
+- element 0-4
+- element 0-4
+- reduction percent
+
+37 - Single Target Elemental Damage
+two params
+- element 0-4
+- atk percent
+
+LS
+38 - Reduce damage when under X HP
+three params
+- X hp percent
+- always 100
+- reduction percent
+
+LS
+39 - stat multiplier when under X HP
+four params
+- X hp percent
+- 1 atk, 2 rcv, 0 none
+- 1 atk, 2 rcv, 0 none
+- atk percent
+
+LS
+40 - Double Attack Multplier for Attr
+three params
+- element 0-4
+- element 0-4
+- atk percent
+
+LS
+41 - Counter Attack
+three params
+- chance
+- atk percent
+- element 0-4
+
+42 - Fixed Element to Element Single Damage
+three params
+- element to 0-4
+- element from 0-4
+- damage value
+
+LS
+43 - Damage Reduction when within HP range
+three params
+- hp range start
+- hp range end
+- reduction percent
+
+LS
+44 - Stat multiplier when HP is greater than or equal to X percent
+four params
+- x percent
+- stat 1
+- stat 2
+- percent
+
+LS
+45 - HP and ATK multiplier for Attr
+two params
+- element 0-4
+- hp and atk percent
+
+LS
+46 - HP multiplier for Two Attr
+three params
+- element 0-4
+- element 0-4
+- hp percent
+
+LS
+48 - HP multiplier for One Attr
+two params
+- element 0-4
+- hp percent
+
+LS
+49 - RCV multiplier for One Attr
+two params
+- element 0-4
+- rcv percent
+
+50 - RCV multiplier for random turns
+three params
+- min turn
+- max turn
+- rcv percent
+
+51 - Attack becomes mass attack
+one param
+- turn count
+
+52 - Enhance orbs
+two params
+- element 0-5
+- ?
+
+LS
+53 - Boosts egg drops
+one param
+- boost percent
+
+LS
+54 - Boosts coin
+one param
+- boost percent
+
+55 - Fixed Single Enemy Damage
+one param
+- damage value
+
+56 - Fixed Mass Damage
+one param
+- damage value
+
+58 - Random Mass Elemental Damage
+three params
+- element 0-4
+- min percent
+- max percent
+
+59 - Random Single Elemental Damage
+three params
+- element 0-4
+- min percent
+- max percent
+
+60 - stronger counterattack
+three params
+- turn count
+- atk percent
+- element 0-4
+
+LS
+61 - ATK multiplier for color matching
+five params
+- attrs flags should be looked in binary
+- number of colors
+- base atk percent
+- percent increment per
+- additional increments
+
+LS
+63 - HP and RCV multiplier for Type
+two params
+- type
+- percent
+
+LS
+64 - ATK and RCV multiplier for Type
+two params
+- type
+- percent
+
+LS
+65 - All stats multiplier for type
+two params
+- type
+- percent
+
+LS
+66 - ATK multiplier with combos
+two params
+- combo required
+- atk percent
+
+LS
+67 - HP and RCV for One Attr
+two params
+- element 0-4
+- percent
+
+LS
+69 - ATK for One Attr and One Type
+three params
+- element 0-4
+- type
+- attack percent 
+
+71 - Board Change
+multiple params
+- element 0-4
+- ends with -1
+
+LS
+73 - HP and ATK for One Attr and One Type
+three params
+- element 0-4
+- type
+- attack percent 
+
+LS
+75 - ATK and RCV for One Attr and One Type
+three params
+- element 0-4
+- type
+- percent
+
+LS
+76 - All stats for One Attr and One Type
+three params
+- element 0-4
+- type
+- percent
+
+LS
+77 - HP and ATK multiplier for Two Types
+three params
+- type
+- type
+- percent
+
+LS
+79 - ATK and RCV multiplier for Two Types
+three params
+- type
+- type
+- percent
+
+84 - Single Enemy Elemental Damage and cut HP
+three to four params
+- element 0-4
+- min atk percent
+- max atk percent
+- HP to 1 if empty, if stated, remaining HP% after use
+
+85 - Mass Enemy Elemental Damage and cut HP
+three to four params
+- element 0-4
+- min atk percent
+- max atk percent
+- HP to 1 if empty, if stated, remaining HP% after use
+
+86 - Single Enemy Fixed Damage and cut HP
+three to four params
+- element 0-4
+- damage value
+- always 0
+- HP to 1 if empty, if stated, remaining HP% after use
+
+88 - ATK multiplier for Type
+three params
+- turn count
+- type
+- atk percent
+
+89 - ???
+
+90 - ATK (+ RCV) for One or Two Attr
+four params
+- turn count
+- element 0-4 5 if singular and RCV
+- element 0-4 5 if singular and RCV (either or can be 5)
+- percent
+
+91 - Enhance Two Element Orbs
+three params
+- element 0-5
+- element 0-5
+- 6
+
+92 - ATK multiplier for Two Types
+four params
+- turn count
+- type
+- type
+- atk percent
+
+93 - Leadswap
+no params
+
+LS
+94 - ATK multiplier for Attr when HP is less than X percent
+five params
+- X percent
+- element
+- stat? 1 atk
+- always 0
+- atk percent
+
+LS
+95 - ATK multiplier for Type when HP is less than X percent
+five params
+- X percent
+- type
+- stat? 1 atk
+- always 0
+- atk percent
+
+LS
+96 - ATK multiplier for Attr when HP is more than X percent
+five params
+- X percent
+- element
+- stat? 1 atk
+- always 0
+- atk percent
+
+LS
+97 - ATK multiplier for Type when HP is more than X percent
+five params
+- X percent
+- type
+- stat? 1 atk
+- always 0
+- atk percent
+
+LS
+98 - ATK multiplier for combo matching
+five params
+- combo required
+- base atk percent
+- percent increment per
+- max combo required
+
+LS
+100 - ATK (+ RCV) mutliplier when skill used
+three params
+- stat? 1 atk
+- 0 if just ATK / 2 if both ATK and RCV
+- percent
+
+LS
+101 - ATK multiplier at exact combo
+two params
+- combo required
+- atk percent
+
+LS
+103 - ATK and RCV multiplier for combo matching
+four params
+- combo required
+- 1 atk?
+- 2 rcv?
+- percent
+
+LS
+104 - ATK multiplier for One Attr for combo matching
+five params
+- combo required
+- element flags - 1 fire, 2 water, 4 wood, 8 light, 16 dark
+- atk? 1
+- always 0
+- atk percent
+
+LS
+105 - reduces RCV but ATK multiplier
+two params
+- reduction percent
+- atk percent
+
+LS
+106 - reduces HP but ATK multiplier
+two params
+- reduction percent
+- atk percent
+
+LS
+107 - reduces HP but ATK multiplier for One Attr
+three params
+- reduction percent
+- element flags (can be empty)
+- atk percent (can be empty)
+
+LS
+108 - reduces HP but ATK multiplier for One Type
+three params
+- reduction percent
+- type
+- atk percent
+
+LS
+109 - ATK multiplier if Element X orbs linked matching
+three params
+- element 0-4
+- linked orb count
+- atk percent
+
+110 - Grudge Strike
+five params
+- 0 if mass, 1 if single
+- element 0-4
+- min atk percent
+- max atk percent
+- ? always 300
+
+LS
+111 - HP and ATK multiplier for Two Attr
+three params
+- element 0-4
+- element 0-4
+- percent
+
+LS
+114 - All stat multiplier for Two Attr
+three params
+- element 0-4
+- element 0-4
+- percent
+
+115 - Single Enemy Elemental Damage and Heal based on dealt damage
+three params
+- element 0-4
+- atk percent
+- heal percent
+
+116 - Skill Combo = Multiple skills
+many params
+- skill id
+
+117 - Remove bind (including Awoken bind) and heal
+five params max
+- bind turn
+- heal RCV flat
+- heal RCV percent
+- heal HP percent
+- awoken bind turn
+
+118 - Random skill
+many params
+- skill id
+
+119 - ATK multiplier with X+ linked orbs
+three to five params
+- element flag - 1023 if all, 384 if poison or mortal poison etc
+- X linked orbs
+- atk percent
+- atk increment per orb
+- max orb linked
+
+121 - unique HP and ATK multiplier for Attr or Types
+- element flag
+- type flag
+- hp percent
+- atk percent
+
+LS
+122 - ATK and RCV multiplier for Attr or Types when hp is X percent or less
+- X percent
+- element flag
+- type flag
+- atk percent
+- rcv percent
+
+LS
+123 - ATK and RCV multiplier for Attr or Types when hp is X percent or more
+- X percent
+- element flag
+- type flag
+- atk percent
+- rcv percent
+
+LS
+124 - ATK multiplier when Attr matching
+eight params
+- element flag
+- element flag
+- element flag
+- element flag
+- element flag
+- combo required
+- atk percent
+- akk increment
+
+LS
+125 - HP, ATK, RCV multiplier when card is in team
+eight params
+- id
+- id
+- id
+- id
+- id
+- hp percent
+- atk percent
+- rcv percent
+
+126 - Skyfall likelihood
+four params
+- element flag
+- min turn count
+- max turn count
+- increased likelihood
+
+127 - column orb generation
+four params max
+- column position 1 - leftmost 32 - rightmost
+- element flag
+- column position 1 - leftmost 32 - rightmost
+- element flag
+
+128 - row orb generation
+four params max
+- row position 1 - top 32 - bottom
+- element flag
+- row position 1 - top 32 - bottom
+- element flag
+
+LS
+129 - Stat multiplier for Attr and Types
+five params
+- element flag
+- type flag
+- hp percent
+- atk percent
+- rcv percent
+
+LS
+130 - ATK multiplier and reduces damage for Attr or Types when HP is X percent or less
+seven params
+- X percent
+- Attr
+- Types
+- atk percent
+- always 0?
+- Attr
+- reduction percent
+
+LS
+131 - ATK multiplier and reduces damage for Attr or Types when HP is X percent or more
+seven params
+- X percent
+- Attr flag
+- Type flag
+- atk percent
+- always 0?
+- Attr
+- reduction percent
+
+132 - Orb move time multiplier
+three params
+- turn count
+- fixed time in tenths of a second
+- orb move time percent
+
+LS
+133 - ATK and RCV multiplier for Attr and Types
+four params
+- Attr flag
+- Type flag
+- atk percent
+- rcv percent
+
+LS
+136 - All stat mutliplier for Attr (can doubledip)
+eight params
+- Attr flag
+- hp percent
+- atk percent
+- rcv percent
+- Attr flag
+- hp percent
+- atk percent
+- rcv percent
+
+LS
+137 - All stat multiplier for Types (can doubledip)
+eight params
+- Type flag
+- hp percent
+- atk percent
+- rcv percent
+- Attr flag
+- hp percent
+- atk percent
+- rcv percent
+
+LS
+138 - Leader skill combo
+many params
+- leader skill id
+
+LS
+139 - ATK multiplier when HP is at X or more/less, ATK multiplier when HP is Y or more/less
+eight params
+- Attr flag
+- Type flag
+- X percent
+- 0 if more than, 1 if less than
+- atk percent
+- Y percent
+- 0 if more than, 1 if less than
+- atk percent
+
+140 - Enhance orbs by Attr flag
+two params
+- Attr flags
+- always 6
+
+141 - Create orbs at random (over non-X orbs)
+three params
+- Number of orbs to create
+- Attr flags
+- Attr flags to not create over (doesn't exist if over any orbs)
+
+142 - Self attr change
+two params
+- turn count
+- element 0-4 (if empty its fire)
+
+143 - Mass/Single Enemy Elemental Damage based on Team's overall HP
+four params
+- hp percent
+- element 0-4 ?
+
+144 - Mass/Single Enemy Elemental Damage based on Team's overall ATK
+four params
+- Attr flag for overall value calc
+- percent value
+- 0 if mass, 1 if single
+- damage element 0-4
+
+145 - Recover HP based on Team's overall RCV
+one param
+- rcv percent
+
+146 - Haste
+two params
+- min turn
+- max turn
+
+LS
+148 - Rank EXP mutliplier
+one param
+- EXP percent
+
+LS
+149 - RCV multiplier when erasing 4 Heart orbs
+one param
+- rcv percent
+
+LS
+150 - ATK multiplier when erasing 5 Orbs with 1 Enhanced orb
+one param
+- always 0
+- atk 
+
+LS
+151 - ATK multiplier and damage reduction when matching Heart Cross
+three params
+- atk percent
+- always 0
+- reduction percent
+
+152 - Lock Orbs
+two params
+- Attr flag
+- number of orbs to lock
+
+153 - Enemy attribute change
+two params
+- Element 0-4
+- always 1
+
+154 - Orb Change
+two params
+- Attr flag
+- Attr flag (if more than one attr, random)
+
+LS
+155 - Multiplayer All Stat multiplier
+six params
+- Attr flag (31 if all members)
+- Type flag?
+- HP percent
+- ATK percent
+- RCV percent
+
+156 - Awakening based action
+six params
+- turn count
+- awakening id
+- awakening id
+- awakening id
+- 1 recover HP, 2 atk mult, damage reduction
+- percent per awakening
+
+LS
+157 - ATK multiplier per cross
+four params
+- element 0-4
+- atk percent
+- element 0-4
+- atk percent
+
+LS
+158 - Minimum orb change and ATK multiplier
+six params
+- new min orb count
+- Attr flag
+- Type flag
+- HP percent
+- ATK percent
+- RCV percent
+
+LS
+159 - ATK multiplier with X Linked Orbs, up to Yx
+five params
+- Attr flag
+- minimum linked
+- base atk percent
+- increment per
+- max linked
+
+160 - Adds combos
+two params
+- turn count
+- combos added
+
+161 - true gravity for all
+one param
+- Max HP percent
+
+LS
+162 - 7x6 Board
+
+LS
+163 - NSF, All Stats mult for Attr and Type with damage reduction
+seven params
+- Attr flag
+- Type flag
+- hp percent
+- atk percent
+- rcv percent
+- Attr flag
+- reduction percent
+
+LS
+164 - ATK and RCV mult for multiple matching
+eight params
+- Attr flag
+- Attr flag
+- Attr flag
+- Attr flag
+- min matching
+- ATK percent
+- RCV percent
+- additional increment
+
+LS
+165 - ATK and RCV mult for attr matching?
+seven params
+- Attr flag
+- min attr matched
+- atk percent
+- rcv percent
+- atk increment
+- rcv increment
+- additional increment available
+
+LS
+166 - ATK and RCV mult for combo matching
+six params
+- combo required
+- atk percent
+- rcv percent
+- atk increment
+- rcv increment
+- max combo
+
+LS
+167 - ATK and RCV mult for X Linked orbs
+seven params
+- Attr flag
+- X Linked orbs
+- atk percent
+- rcv percent
+- atk increment
+- rcv increment
+- max Linked
+
+168 - atk percent per awakening
+eight params
+- turn count
+- awakening id
+- awakening id
+- awakening id
+- awakening id
+- awakening id
+- awakening id
+- atk percent
+
+LS
+169 - ATK mult and damage reduction for combo matching
+three params
+- combo required
+- atk percent
+- reduction percent
+
+LS
+170 - ATK mult and damage reduction for attr matching
+four params
+- Attr flag
+- number of attr required
+- atk percent
+- reduction percent
+
+LS
+171 - ATK mult and damage reduction for specific matching
+eight params
+- Attr flag
+- Attr flag
+- Attr flag
+- Attr flag
+- min matching
+- atk percent
+- reduction percent
+- final atk percent
+
+172 - Removes Locks
+no params
+
+173 - Voids absorption
+four params
+- turn count
+- attribute
+- combo
+- damage
+
+175 - All Stat when team has collab units only
+six params
+- collab id
+- collab id
+- collab id
+- hp percent
+- atk percent
+- rcv percent
+
+176 - Orb generate by shape
+six params
+- bit flag for orb location
+- bit flag for orb location
+- bit flag for orb location
+- bit flag for orb location
+- bit flag for orb location
+- element 0-5
+
+LS
+177 - NSF, All Stat mult, ATK mult when X orbs or less remain on board
+eight params
+- Attr flag
+- Type flag
+- HP percent
+- ATK percent
+- RCV percent
+- X orbs
+- base ATK percent
+- increment per orb erased
+
+LS
+178 - Fixed orb move time, All Stat mult, damage reduction
+eight params
+- fixed orb move time in seconds
+- Attr flag
+- Type flag
+- HP percent
+- ATK percent
+- RCV percent
+- Attr flag
+- reduction percent
+
+179 - Recover X % of HP for Y turns
+three params
+- turn count
+- maybe flat amount?
+- X percent
+
+180 - Enhanced orb skyfall likelihood
+two params
+- turn count
+- likelihood
+
+LS
+182 - ATK mult and damage reduction with X Linked orbs
+four params
+- Attr flag
+- X Linked orbs
+- atk percent
+- reduction percent
+
+LS
+183 - Damage reduction, All Stat mult when HP is X or more, when HP is Y or less
+eight params
+- Attr flag
+- Type flag
+- X percent
+- ATK percent
+- reduction percent
+- Y percent
+- ATK percent
+- RCV percent
+
+184 - NSF
+one param
+- turn count
+
+LS
+185 - Orb move time change, All Stat mult, 
+- orb move time in hundredth seconds
+- Attr flag
+- Type flag
+- hp percent
+- atk percent
+- rcv percent
+
+LS
+186 - 7x6 board, All Stat mult
+five params
+- Attr flag
+- Type flag
+- HP percent
+- ATK percent
+- RCV percent
+
+
+188 - Single Enemy Fixed Damage
+one param
+- damage value
+
+189 - Victory Road, need special treatment
+
+190 - Create Combo Orbs
+two params
+- Attr flag (63 means all orb types)
+- Number of combo orbs to create
+
+191 - Pierce damage void
+one param
+- turns
+
+LS
+192 - ATK mult and combo add when matching X Linked orbs
+four params
+- Attr flag
+- X linked orbs
+- atk percent
+- combo add
+
+LS
+193 - ATK and RCV mult, damage reduction when matching L shaped Orbs
+four params
+- Attr flag
+- atk percent
+- rcv percent
+- reduction percent
+
+LS
+194 - ATK mult and combo add when matching X attributes
+four params
+- Attr flag
+- Number of attributes required
+- atk percent
+- combo add
+
+195 - Cut HP
+one param
+- remaining HP percent (falls to 1 if blank)
+
+196 - Unmatchable recovery
+one param
+- turns
+
+LS
+197 - voids poison damage
+no param
+
+LS
+198 - ATK mult, damage reduction, clear awoken bind when recovering more than X hp
+four params
+- required healing amount
+- atk percent
+- reduction percent
+- awoken bind clear turns
+
+LS
+199 - Additional damage when X attributes attack
+three params
+- Attr flag
+- Number of attributes required
+- damage value
+
+LS
+200 - Additional damage when matchin X linked orbs
+three params
+- Attr flag
+- X linked orbs
+- damage value
+
+LS
+201 - Attr combo matching based additional damage
+six params
+- Attr flag
+- Attr flag
+- Attr flag
+- Attr flag
+- min required
+- damage value
+
+202 - Tranform to id
+one param
+- card id
+
+LS
+203 - All Stat mult for certain evo types
+four params
+- evo type 0 for pixel, 2 for reinc or super reinc
+- hp percent
+- atk percent
+- rcv percent
+
+205 - Locked orbs skyfall likelihood
+two params
+- Attr flag (-1 is all)
+- turn count
+
+LS
+206 - Combo add when Attr combo matching
+seven params
+- Attr flag
+- Attr flag
+- Attr flag
+- Attr flag
+- Attr flag
+- number of matching required
+- combo add
+
+207 - Spinner
+eight params
+- turn count
+- time in hundredth seconds
+- row orb flag
+- row orb flag
+- row orb flag
+- row orb flag
+- row orb flag
+- number of orb flag
+
+208 - Create Two Kinds of Orbs
+six param
+- number of orbs
+- Attr flag
+- Attr flag to not create over
+- number of orbs
+- Attr flag (usually heal only)
+- Attr flag to not create over (usually prev + heal)
+
+LS
+209 - Combo add when matching Heart Cross
+one param
+- combo add
+
+LS
+210 - Damage reduction and combo add when matching Attr Cross
+three params
+- Attr flag
+- reduction percent
+- combo add
+
+LS
+211 - Grant awakening to Attr and Type
+three param
+- Attr flag
+- Type flag
+- Awakening id
+
+214 - Unable to use skills
+one param
+- turn count
+
+215 - Unmatchable orbs
+two params
+- turn count
+- Attr flag
+
+217 - All Stat when total rarity is less than or equal to X
+four params
+- X rarity
+- HP percent
+- ATK percent
+- RCV percent
+
+218 - Reduce skill charge (reverse haste)
+two params
+- min turn count
+- max turn count
+
+LS
+219 - Combo add when matching X Linked orbs
+three params
+- Attr flag
+- X Linked orbs
+- combo add
+
+LS
+220 - Combo add when matching L Attr
+two params
+- Attr flag
+- combo add
+
+LS
+221 - Additional damage when matching L Attr
+two params
+- Attr flag
+- damage value
+
+LS
+223 - Additional damage when matching combos
+two params
+- combo required
+- damage value
+
+224 - Attr change for limited turns
+two params
+- turn count
+- element 0-4
+
+225 - HP clause for skills
+two params
+- hp % required for additional skill
+- hp % required to use the skill
+
+226 - Nail skyfall likelihood
+two params
+- turn count
+- likelihood
+
+227 - Switch Leader with rightmost sub
+no param
+
+228 - ATK and RCV mult for Attr and Type
+five params
+- turn count
+- Attr flag
+- Type flag
+- atk percent per
+- rcv percent per
+
+LS
+229 - All Stat mult for each Attr and Type
+five params
+- Attr flag
+- Type flag
+- hp percent per
+- atk percent per
+- rcv percent per
+
+230 - ATK mult for specific slot
+three param
+- turn count
+- 1 self, 2 leader, 4 helper, 8 all sub, 15 all
+- atk percent
+
+231 - ATK and RCV mult for Killer awakenings
+seven params
+- turn count
+- killer id
+- killer id
+- killer id
+- killer id
+- killer id
+- atk percent per
+- rcv percent per
+
+232 - skill evolve
+many params
+- skill id
+
+233 - looping skill evolve
+many params
+- skill id
+
+234 - Battle number skill limit
+two params
+- usuable from battle X and on
+- usuable until battle Y or before
+
+LS
+235 - ATK mult, combo add, additional damage per linked combo
+seven params
+- Attr flag
+- usually used for just regular 3+ orb matching, some 5+
+- usually for linked 4+ or 5+ or 6+ orb
+- atk percent
+- maybe rcv percent
+- combo add
+- additional damage
+
+236 - random transform
+many params
+- card id
+
+237 - HP change
+two params
+- turn count
+- hp percent
+
+238 - cloud
+five params
+- turn count
+- length
+- height
+- row to create
+- column to create
+
+239 - tape
+two params
+- column flag
+- turn count
+
+241 - damage cap
+two params
+- turn count
+- damage in hundred millions
+
+242 - barbed orbs
+four params
+- turn count
+- Attr flag
+- always 4
+- likelihood
+
+244 - board size
+two params
+- turn count
+- 1 for 7x6, 2 for 5x4, 3 for 6x5 
+
+LS
+245 - All Stat mult for rarity
+six params
+- -1 all diff, -2 all same, any positive number = all that rarity
+- Attr flag
+- always 0
+- hp percent
+- atk percent
+- rcv percent
+
+246 - Za Warudo
+three params
+- seconds for CtW
+- combo required
+- damage cap change in hundred million if combo requirement met
+
+247 - Za Warudo
+four params
+- seconds for CtW
+- Attr flag
+- Number of Attributes
+- damage cap change in hundred million if attributes requirement met
+
+248 - delayed effect
+two params
+- turn count
+- skill id
+
+249 - specific orb spinner
+eight params
+- turn count
+- Attr flag
+- location
+- location
+- location
+- location
+- location
+- number of spinners
+
+250 - assist vanishing
+no param
+
+251 - Sticky blind orbs
+three params
+- turn count
+- min orb
+- max orb
+
+253 - Skyfall Foresight
+one param
+- turn count
+
+LS
+254 - Skyfall Foresight
+
+255 - Skill usable clause orb on board
+two params
+- Attr flag
+- number of orbs on board
+
+257 - Elemental Road need special treatment
+
+258 - cap increase for specific slot
+three params
+- turn count
+- damage cap change in hundred million
+- 1 for self, 2 for leader, 4 for helper, 8 for subs
+
+259 - Reduce enemies' shield
+one param
+- reduction percent
+
+261 - true gravity single
+one param
+- reduction percent
+
+262 - Create nail orbs
+one param
+- number of orbs
+
+263 - cap increase for specific attribute
+three param
+- turn count
+- damage cap change in hundred million
+- Attr flag
+
+LS
+265 - Part Break mult
+one param
+- part break percent
+
+
+
+268 - Usable X amount of times
