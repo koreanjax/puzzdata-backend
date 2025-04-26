@@ -15,7 +15,7 @@ import(
 
 const (
     USER = "root"
-    PASSWORD = "*****"
+    PASSWORD = ""
     DBNAME = "test2"
 )
 
@@ -39,6 +39,7 @@ func main() {
     // Create the handlers
     ch := handlers.NewCards(l, db)
     sh := handlers.NewSkills(l, db)
+    ah := handlers.NewAwakenings(l ,db)
 
     // Create a new serve mux and register the handlers
     r := mux.NewRouter()
@@ -54,6 +55,9 @@ func main() {
      
     skillRouter := r.PathPrefix("/skill/").Subrouter()
     skillRouter.HandleFunc("/id={id:[0-9]+}", sh.SkillHandler).Methods(http.MethodGet)
+
+    awakeningRouter := r.PathPrefix("/awakening/").Subrouter()
+    awakeningRouter.HandleFunc("/awkns={awkns}", ah.BaseHandler).Methods(http.MethodGet)
 
     handler := cors.Default().Handler(r)
 

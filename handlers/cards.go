@@ -66,7 +66,7 @@ func (c *Cards) NameHandler(w http.ResponseWriter, r *http.Request) {
     name := vars["name"]
 
     queryFormat := `"%` + name + `%"`
-    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND name LIKE %s;`, redacted, queryFormat)
+    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND (name LIKE %s OR search_keywords LIKE %s);`, redacted, queryFormat, queryFormat)
 
     results, err := c.db.Query(q)
 
