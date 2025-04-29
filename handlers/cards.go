@@ -33,7 +33,7 @@ func (c *Cards) IdHandler(w http.ResponseWriter, r *http.Request) {
 
     id := vars["id"]
 
-    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND id=%s;`, redacted, id)
+    q := fmt.Sprintf(`SELECT monster_id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND monster_id=%s;`, redacted, id)
 
     results, err := c.db.Query(q)
     if err != nil  {
@@ -45,7 +45,7 @@ func (c *Cards) IdHandler(w http.ResponseWriter, r *http.Request) {
     for results.Next() {
         var card models.Card
 
-        err = results.Scan(&card.ID, &card.NAME)
+        err = results.Scan(&card.MONSTER_ID, &card.NAME)
         
         if err != nil {
             http.Error(w, "Card cannot be reached with id: " + id, http.StatusInternalServerError)
@@ -66,7 +66,7 @@ func (c *Cards) NameHandler(w http.ResponseWriter, r *http.Request) {
     name := vars["name"]
 
     queryFormat := `"%` + name + `%"`
-    q := fmt.Sprintf(`SELECT id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND (name LIKE %s OR search_keywords LIKE %s);`, redacted, queryFormat, queryFormat)
+    q := fmt.Sprintf(`SELECT monster_id, name FROM card WHERE official=100 AND name NOT LIKE %s AND (name LIKE %s OR search_keywords LIKE %s);`, redacted, queryFormat, queryFormat)
 
     results, err := c.db.Query(q)
 
@@ -78,7 +78,7 @@ func (c *Cards) NameHandler(w http.ResponseWriter, r *http.Request) {
     for results.Next() {
         var card models.Card
 
-        err = results.Scan(&card.ID, &card.NAME)
+        err = results.Scan(&card.MONSTER_ID, &card.NAME)
         
         if err != nil {
         	http.Error(w, "Card cannot be reached with name: " + name, http.StatusInternalServerError)
@@ -100,7 +100,7 @@ func (c *Cards) CardHandler(w http.ResponseWriter, r *http.Request) {
 
     var queryResults models.QueryResults
 
-    q := `SELECT * FROM card WHERE id < 100000 AND id=?`
+    q := `SELECT * FROM card WHERE monster_id=?`
 
     err := c.db.Get(&queryResults, q, id)
     if err != nil {

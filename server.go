@@ -3,6 +3,7 @@ package main
 import(
     "os"
     "fmt"
+    "flag"
     "log"
     "puzzdata-backend/handlers"
     "net/http"
@@ -15,7 +16,6 @@ import(
 
 const (
     USER = "root"
-    PASSWORD = ""
     DBNAME = "test2"
 )
 
@@ -23,8 +23,11 @@ func main() {
     // Create a new Log for all packages to use
     l := log.New(os.Stdout, "puzzdata-api ", log.LstdFlags)
 
+    pwd := flag.String("pwd", "", "MySQL db password")
+    flag.Parse()
+
     // Create a full connection string for mysql
-    connString := fmt.Sprintf("%s:%s@/%s", USER, PASSWORD, DBNAME)
+    connString := fmt.Sprintf("%s:%s@/%s", USER, *pwd, DBNAME)
 
     // Connect to the database using the connection string
     db, err := sqlx.Open("mysql", connString)
@@ -39,7 +42,7 @@ func main() {
     // Create the handlers
     ch := handlers.NewCards(l, db)
     sh := handlers.NewSkills(l, db)
-    ah := handlers.NewAwakenings(l ,db)
+    fh := handlers.NewFilter(l ,db)
 
     // Create a new serve mux and register the handlers
     r := mux.NewRouter()
@@ -56,8 +59,8 @@ func main() {
     skillRouter := r.PathPrefix("/skill/").Subrouter()
     skillRouter.HandleFunc("/id={id:[0-9]+}", sh.SkillHandler).Methods(http.MethodGet)
 
-    awakeningRouter := r.PathPrefix("/awakening/").Subrouter()
-    awakeningRouter.HandleFunc("/awkns={awkns}", ah.BaseHandler).Methods(http.MethodGet)
+    filterRouter := r.PathPrefix("/filter").Subrouter()
+    filterRouter.HandleFunc("/settings", fh.FilterHandler).Methods(http.MethodGet)
 
     handler := cors.Default().Handler(r)
 

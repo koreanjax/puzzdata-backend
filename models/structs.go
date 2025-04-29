@@ -1,7 +1,7 @@
 package models
 
 type Card struct {
-    ID              int `json:"id"`
+    MONSTER_ID      int `json:"monster_id"`
     NAME            string `json:"name"`
 }
 
@@ -97,7 +97,7 @@ type KeyValues struct {
 }
 
 type QueryResults struct {
-    ID                          int `json:"id"`
+    MONSTER_ID                  int `json:"monster_id"`
     NAME                        string `json:"name"`
     ATTRS                       string `json:"attrs"`
     TYPES                       string `json:"types"`
@@ -133,7 +133,7 @@ type QueryResults struct {
 }
 
 type SkillResults struct {
-    ID              int `json:"id"`
+    SKILL_ID        int `json:"skill_id"`
     NAME            string `json:"name"`
     TEXT            string `json:"text"`
     SKILL_TYPE      int `json:"skill_type"`

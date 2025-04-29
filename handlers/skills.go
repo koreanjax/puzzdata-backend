@@ -29,7 +29,7 @@ func (s *Skills) SkillHandler(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     id := vars["id"]
 
-    q := `SELECT * FROM skill WHERE id=?`
+    q := `SELECT * FROM skill WHERE skill_id=?`
 
     var skillResults models.SkillResults
 
