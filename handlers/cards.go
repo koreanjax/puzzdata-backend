@@ -5,6 +5,7 @@ import (
     "fmt"
     "encoding/json"
     "net/http"
+    "strconv"
     "puzzdata-backend/models"
     "github.com/gorilla/mux"
     "github.com/jmoiron/sqlx"
@@ -33,7 +34,17 @@ func (c *Cards) IdHandler(w http.ResponseWriter, r *http.Request) {
 
     id := vars["id"]
 
-    q := fmt.Sprintf(`SELECT monster_id, name FROM card WHERE id < 100000 AND official=100 AND name NOT LIKE %s AND monster_id=%s;`, redacted, id)
+    idInt, err := strconv.Atoi(id)
+    if err != nil {
+        c.l.Println(" failed to convert id strig to id int ", err)
+        return
+    }
+
+    if idInt > 9899 {
+        id = strconv.Itoa(idInt + 100)
+    }
+
+    q := fmt.Sprintf(`SELECT monster_id, name FROM card WHERE official=100 AND name NOT LIKE %s AND monster_id=%s;`, redacted, id)
 
     results, err := c.db.Query(q)
     if err != nil  {
