@@ -141,7 +141,22 @@ type SkillResults struct {
     SKILL_INIT_CD   int `json:"skill_init_cd"`
     UNKNOWN_1       string `json:"unknown_1"`
     MULTI_SKILLS    string `json:"multi_skills"`
-    MULTI_TYPES     string `json:"multi_types"`
+    PARAMETERS      string `json:"parameters"`
+    PARAM_1         string `json:"param_1"`
+    PARAM_2         string `json:"param_2"`
+    PARAM_3         string `json:"param_3"`
+    PARAM_4         string `json:"param_4"`
+    PARAM_5         string `json:"param_5"`
+    PARAM_6         string `json:"param_6"`
+    PARAM_7         string `json:"param_7"`
+    PARAM_8         string `json:"param_8"`
+    PARAM_9         string `json:"param_9"`
+    PARAM_10        string `json:"param_10"`
+}
+
+type MultiSkillResults struct {
+    SKILL_ID        int `json:"skill_id"`
+    MULTI_SKILLS    string `json:"multi_skills"`
     PARAMETERS      string `json:"parameters"`
     PARAM_1         string `json:"param_1"`
     PARAM_2         string `json:"param_2"`
