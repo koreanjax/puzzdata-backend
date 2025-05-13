@@ -3,7 +3,6 @@ package main
 import(
     "os"
     "fmt"
-    "flag"
     "log"
     "puzzdata-backend/handlers"
     "net/http"
@@ -13,31 +12,21 @@ import(
     _ "github.com/go-sql-driver/mysql"
 )
 
-
-const (
-    USER = "root"
-    DBNAME = "test2"
-)
-
 func main() {
     // Create a new Log for all packages to use
-    l := log.New(os.Stdout, "puzzdata-api ", log.LstdFlags)
-
-    pwd := flag.String("pwd", "", "MySQL db password")
-    flag.Parse()
+    l := log.New(os.Stdout, "padge-api ", log.LstdFlags)
 
     // Create a full connection string for mysql
-    connString := fmt.Sprintf("%s:%s@/%s", USER, *pwd, DBNAME)
+    connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", os.Getenv("MYSQLUSER"), os.Getenv("MYSQL_ROOT_PASSWORD"), os.Getenv("MYSQLHOST"), os.Getenv("MYSQLPORT"), os.Getenv("MYSQL_DATABASE"))
 
     // Connect to the database using the connection string
     db, err := sqlx.Open("mysql", connString)
     log.Println(db)
     if err != nil {
         log.Println(err.Error())
+        l.Println("Connection Failed!")
     }
     defer db.Close()
-
-    l.Println("Connection Successful!")
 
     // Create the handlers
     ch := handlers.NewCards(l, db)
@@ -47,11 +36,10 @@ func main() {
     // Create a new serve mux and register the handlers
     r := mux.NewRouter()
 
-    r.HandleFunc("/", ch.HomeHandler)
-
-    searchRouter := r.PathPrefix("/search").Subrouter()
-    searchRouter.HandleFunc("/id={id:[0-9]+}", ch.IdHandler).Methods(http.MethodGet)
-    searchRouter.HandleFunc("/name={name}", ch.NameHandler).Methods(http.MethodGet)
+    //searchRouter := r.PathPrefix("/search").Subrouter()
+    r.HandleFunc("/search", ch.SearchHandler).Methods(http.MethodGet)
+    //searchRouter.HandleFunc("/id={id:[0-9]+}", ch.IdHandler).Methods(http.MethodGet)
+    //searchRouter.HandleFunc("/name={name}", ch.NameHandler).Methods(http.MethodGet)
     
     cardRouter := r.PathPrefix("/card/").Subrouter()
     cardRouter.HandleFunc("/id={id:[0-9]+}", ch.CardHandler).Methods(http.MethodGet)

@@ -25,12 +25,18 @@ func NewFilter(l *log.Logger, db *sqlx.DB) *Filter {
 // tasks to make it look clean.
 const noFilter string = "-1"
 const whereClause string = "WHERE "
-const attrsTableBase string = "(SELECT monster_id FROM attrs "
+const attrTableBase string = "(SELECT monster_id FROM attr "
 const typeBase string = "types LIKE "
 const awknsTableBase string = "(SELECT DISTINCT monster_id, name FROM awkn "
-const dbQueryBase string = "SELECT awkn.monster_id, awkn.name FROM %s awkn INNER JOIN %s attrs ON awkn.monster_id=attrs.monster_id WHERE awkn.name NOT LIKE \"%%*****%%\" AND awkn.name NOT LIKE \"%%????%%\""
-const skillTableBase string = "SELECT skill_id FROM skill "
-const cardFromSkillBase string = "SELECT c.monster_id, c.name FROM card c INNER JOIN (%s) s ON c.active_skill=s.skill_id"
+const dbQueryBase string = "SELECT awkn.monster_id, awkn.name FROM %s awkn INNER JOIN %s attr ON awkn.monster_id=attr.monster_id WHERE awkn.name NOT LIKE \"%%*****%%\" AND awkn.name NOT LIKE \"%%????%%\""
+const skillTableBase string = "SELECT monster_id, name, active_skill FROM card c INNER JOIN (%s) s ON c.active_skill = s.skill_id"
+const skillTypeBase string = "SELECT DISTINCT skill_id FROM skill s1 INNER JOIN (%s) s2 ON s1.skill_id = s2.root_id"
+const skillTypeUnionBase string = "SELECT root_id FROM skill_type_%s"
+const skillTypeJoin string = "INNER JOIN (%s) s%s ON s%s.root_id = s%s.root_id"
+const multiSkillQualifyBase string = "SELECT * FROM skill WHERE %s"
+const cardFromSkillBase string = "SELECT c.monster_id, c.name FROM card c INNER JOIN (%s) s ON c.active_skill=s.skill_id WHERE c.name NOT LIKE \"%%*****%%\" AND c.name NOT LIKE \"%%????%%\""
+const multiSkillBase string = "SELECT c1.monster_id, c1.name FROM card c1 INNER JOIN (SELECT skill_id FROM skill WHERE (%s)) s1 ON c1.active_skill=s1.skill_id WHERE c1.name NOT LIKE \"%%*****%%\" AND c1.name NOT LIKE \"%%????%%\""
+const singularMultiMerge string = "SELECT monster_id, name FROM ((%s) UNION (%s)) as c2 ORDER BY monster_id"
 const combinedBase string = "SELECT cs.monster_id, cs.name FROM (%s) cs INNER JOIN (%s) ataw ON cs.monster_id=ataw.monster_id"
 const multiSkillType string = `multi_skills RLIKE '\\|[0-9]+,%s\\|'`
 
@@ -112,7 +118,6 @@ func AddParanthesis(text string) string {
     return "(" + text + ")"
 }
 
-
 func findString(arr []string, target string) (bool, string, string) {
     for _, value := range arr {
         if strings.Contains(value, target) {
@@ -121,6 +126,14 @@ func findString(arr []string, target string) (bool, string, string) {
         }
     }
     return true, "", "" // Return empty strings if not found
+}
+
+func removeLast(slice []string) []string {
+    i := len(slice)
+    if (i > 0) {
+        return slice[:i-1]
+    }
+    return slice
 }
 
 /*
@@ -143,7 +156,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     query := r.URL.Query()
 
     // Check the query from frontend
-    f.l.Println(query)
+    // f.l.Println(query)
 
     attrQuery := make([]string, 0)
 
@@ -257,15 +270,15 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
         rarityQueryFinal =  AddParanthesis(rarityQueryFinal)
     }
     
-    attrsTableQuery := JoinStringsNonEmpty([]string {attrQueryFinal, typesQueryFinal, rarityQueryFinal}, queryAnd)
+    attrTableQuery := JoinStringsNonEmpty([]string {attrQueryFinal, typesQueryFinal, rarityQueryFinal}, queryAnd)
 
-    attrsTableQueryFinal := attrsTableBase
+    attrTableQueryFinal := attrTableBase
 
     // If attrs table query is empty, skip the WHERE clause.
-    if len(attrsTableQuery) > 0 {
-        attrsTableQueryFinal = attrsTableQueryFinal + whereClause
+    if len(attrTableQuery) > 0 {
+        attrTableQueryFinal = attrTableQueryFinal + whereClause
     }
-    attrsTableQueryFinal = attrsTableQueryFinal + attrsTableQuery + ")"
+    attrTableQueryFinal = attrTableQueryFinal + attrTableQuery + ")"
 
     awknsQuery := make([]string, 0)
     awakenings := query.Get("awkns")
@@ -293,17 +306,18 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     }
     awknsTableQueryFinal = awknsTableQueryFinal + awknsTableQuery + ")"
 
+    dbQueryFinal := ""
     // This does not need to be long if any of the queries are empty.
     // TODO: Make this not happen if some or all are empty.
-    dbQueryFinal := fmt.Sprintf(dbQueryBase, awknsTableQueryFinal, attrsTableQueryFinal)
-
+    // Now empty if no filters.
+    if (attributes != noFilter || cardTypes != noFilter || awakenings != noFilter) {
+        dbQueryFinal = fmt.Sprintf(dbQueryBase, awknsTableQueryFinal, attrTableQueryFinal)
+    }
     
     skillQuery := make([]string, 0)
-    multiSkillQuery :=make([]string, 0)
     skillType := query.Get("skill")
-    isSkillFilterSingle := false
+    skillFilter := ""
 
-    filteredMultiSkills := make([]models.SkillResults, 0)
     // Very annoying to deal with due to skill combos and skill evos.
     // For now, it deals with singular types only.
     // TODO: implement a way to filter multiple skill types.
@@ -314,12 +328,8 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
         // Split by . to get each skill part
         skillSplit := strings.Split(skillType, ".")
         if len(skillSplit) > 0 {
-            if len(skillSplit) < 2 {
-                isSkillFilterSingle = true
-            }
             for _, skill := range skillSplit {
                 skillPart := make([]string, 0)
-                filterMultiArray := make([]string, 0)
                 // Split by | to get each skill type that can represent this
                 // skill part. ie. Bind Recovery can be 117 or 179
                 skillTypeParam := strings.Split(skill, "|")
@@ -327,13 +337,8 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
 
                     // Split by - to separate the part from its parameters
                     skillCondition := strings.Split(skillType, "-")
-                    filterArray := make([]string, 0)
-                    filter := "skill_type=" + skillCondition[0]
-                    filterArray = append(filterArray, filter)
-
-                    // Adding RLIKE conditions for skill combo searching
-                    multiFilter := fmt.Sprintf(multiSkillType, skillCondition[0])
-                    filterMultiArray = append(filterMultiArray, multiFilter)
+                    paramArray := make([]string, 0)
+                    typeFilter := fmt.Sprintf(skillTypeUnionBase, skillCondition[0])
 
                     // If skill part has parameters, add that as a condition for the query
                     if len(skillCondition) > 1 {
@@ -345,156 +350,74 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                             if param == "*" {
                                 continue;
                             }
+                            if (index == 2 && skillCondition[0] == "90") {
+                                param_2 := paramArray[len(paramArray)-1]
+                                paramArray = removeLast(paramArray)
+                                paramFilter := "param_" + strconv.Itoa(index+1) + param
+                                paramArray = append(paramArray, param_2 + queryOr + paramFilter)
+                                continue;
+                            }
+                            if (index ==2 && skillCondition[0] == "258") {
+                                paramFilter := "param_3 & " + param
+                                paramArray = append(paramArray, paramFilter)
+                                continue;
+                            }
                             paramFilter := "param_" + strconv.Itoa(index+1) + param
-                            filterArray = append(filterArray, paramFilter)
+                            paramArray = append(paramArray, paramFilter)
                         }
                     }
-                    filterArrayFinal := strings.Join(filterArray, queryAnd)
 
-                    // If more than one condition, it needs to be wrapped around with
-                    // paranthesis to keep the condition unique
-                    if len(filterArray) > 1 {
-                        filterArrayFinal =  AddParanthesis(filterArrayFinal)
+                    if (skillCondition[0] == "0") {
+                        paramFilter := "param_2>0"
+                        paramArray = append(paramArray, paramFilter)
                     }
-                    skillPart = append(skillPart, filterArrayFinal)
-                }
-                skillPartFinal := strings.Join(skillPart, queryOr)
-                filterMultiFinal := strings.Join(filterMultiArray, queryOr)
 
-                // If more than one condition, it needs to be wrapped around with
-                // paranthesis to keep the condition unique
-                if len(skillPart) > 1 {
-                    skillPartFinal =  AddParanthesis(skillPartFinal)
+                    if len(paramArray) > 0 {
+                        typeFilter += queryWhere
+                        typeFilter += strings.Join(paramArray, queryAnd)
+                    }
+                    skillPart = append(skillPart, typeFilter)
                 }
-                if len(filterMultiArray) > 1 {
-                    filterMultiFinal = AddParanthesis(filterMultiFinal)
-                }
+                skillPartFinal := strings.Join(skillPart, queryUnion)
                 skillQuery = append(skillQuery, skillPartFinal)
-                multiSkillQuery = append(multiSkillQuery, filterMultiFinal)
             }
         }
         // TODO: Consider skill combo skills
         // Done?
+    }
 
-        multiSkillOverallQuery := "SELECT * FROM skill WHERE %s"
-
-        var multiSkillsOverall = make([]models.SkillResults, 0)
-        multiSkillOverallFinal := fmt.Sprintf(multiSkillOverallQuery, strings.Join(multiSkillQuery, queryAnd))
-        multiSkillError := f.db.Select(&multiSkillsOverall, multiSkillOverallFinal)
-        if multiSkillError != nil {
-            f.l.Println("failed to fetch information from DB", multiSkillError)
-        }
-
-        for _, multiSkill := range multiSkillsOverall {
-            multiSkillsSplit := strings.SplitAfter(multiSkill.MULTI_SKILLS, "|")
-            multiSkillQualifies := true
-            f.l.Println(multiSkill.TEXT)
-            for _, skill := range skillSplit {
-                if !(multiSkillQualifies) {
-                    break;
-                }
-                skillTypeParam := strings.Split(skill, "|")
-                for _, skillType := range skillTypeParam {
-
-                    // Split by - to separate the part from its parameters
-                    skillCondition := strings.Split(skillType, "-")
-                    filterArray := make([]string, 0)
-                    wrongSkillType, skillId, _ := findString(multiSkillsSplit, "," + skillCondition[0] + "|")
-
-                    if (wrongSkillType) {
-                        continue;
-                    }
-
-                    skillIdFilter := "skill_id=" + skillId
-                    filterArray = append(filterArray, skillIdFilter)
-
-                    filter := "skill_type=" + skillCondition[0]
-                    filterArray = append(filterArray, filter)
-
-                    if len(skillCondition) > 1 {
-                        paramSplit := strings.Split(skillCondition[1], ",")
-                        for index, param := range paramSplit {
-
-                            // If *, it can be any so skip to the next parameter to check
-                            if param == "*" {
-                                continue;
-                            }
-                            paramFilter := "param_" + strconv.Itoa(index+1) + param
-                            filterArray = append(filterArray, paramFilter)
-                        }
-                    }
-
-                    filterArrayFinal := strings.Join(filterArray, queryAnd)
-
-                    // If more than one condition, it needs to be wrapped around with
-                    // paranthesis to keep the condition unique
-                    if len(filterArray) > 1 {
-                        filterArrayFinal =  AddParanthesis(filterArrayFinal)
-                    }
-                    var skill = make([]models.SkillResults, 0)
-                    singularSkillFinal := fmt.Sprintf(multiSkillOverallQuery, filterArrayFinal)
-                    skillError := f.db.Select(&skill, singularSkillFinal)
-                    if skillError != nil {
-                        f.l.Println("failed to fetch information from DB", skillError)
-                    }
-                    f.l.Println(multiSkill.TEXT)
-                    f.l.Println(singularSkillFinal)
-                    f.l.Println(skill)
-
-                    // After checking the parameters, the skill does not qualify due to
-                    // not meeting the requirement.
-                    if len(skill) < 1 {
-                        multiSkillQualifies = false
-                    }
-
-                    // If you either found the right one or didn't, it needs to break
-                    // to either check for the next skill part or move onto the next
-                    // skill candidate.
-                    break;
-                }
-            }
-            if (multiSkillQualifies) {
-                filteredMultiSkills = append(filteredMultiSkills, multiSkill)
-            }
+    for index, skillQueryPart := range skillQuery {
+        if index == 0 {
+            skillFilter += fmt.Sprintf(skillTypeBase, skillQueryPart)
+        } else {
+            skillFilter += " "
+            skillFilter += fmt.Sprintf(skillTypeJoin, skillQueryPart, strconv.Itoa(index+2), strconv.Itoa(index+1), strconv.Itoa(index+2))
         }
     }
 
-    filteredSkillQuery := make([]string, 0)
-    for _, multiSkill := range filteredMultiSkills {
-        filter := "skill_id=" + strconv.Itoa(multiSkill.SKILL_ID)
-        filteredSkillQuery = append(filteredSkillQuery, filter)
+    skillFinal := ""
+    if len(skillFilter) > 0 {
+        skillFinal = fmt.Sprintf(skillTableBase, skillFilter)
     }
 
-    filteredSkillFinal := strings.Join(filteredSkillQuery, queryOr)
-
-    skillTableQuery := strings.Join(skillQuery, queryAnd)
-    skillQueryFinal := skillTableBase
-
-    // If more than one condition, it needs to be wrapped around with
-    // paranthesis to keep the condition unique
-    if len(skillTableQuery) > 0 {
-        skillQueryFinal = skillQueryFinal + whereClause + skillTableQuery
-    }
-
-    cardFromSkillFinal := fmt.Sprintf(cardFromSkillBase, skillQueryFinal)
-
-    skillFinal := fmt.Sprintf("SELECT c1.monster_id, c1.name FROM card c1 INNER JOIN (SELECT skill_id FROM skill WHERE (%s)) s1 ON c1.active_skill=s1.skill_id", filteredSkillFinal)
-    singularSkillQuery := fmt.Sprintf(" UNION (%s)", cardFromSkillFinal) 
-
-    if (isSkillFilterSingle) {
-        skillFinal = skillFinal + singularSkillQuery
-    }
-
+    combinedFinal := ""
     // Same problem with above, this does not need to be combined if either or
     // is empty to save query time.
-    combinedFinal := fmt.Sprintf(combinedBase, skillFinal, dbQueryFinal)
+    // I think it's okay now?
+    if len(skillFinal) > 0 && len(dbQueryFinal) > 0 {
+        combinedFinal = fmt.Sprintf(combinedBase, skillFinal, dbQueryFinal)
+    } else if len(skillFinal) > 0 {
+        combinedFinal = skillFinal
+    } else if len(dbQueryFinal) > 0 {
+        combinedFinal = dbQueryFinal
+    } else {
+        json.NewEncoder(w).Encode(cards)
+        return
+    }
 
-    f.l.Println(combinedFinal)
-
-    f.l.Println(strings.Join(multiSkillQuery, queryAnd))
+    // f.l.Println(combinedFinal)
 
     // skillResults := make([]models.SkillResults,0)
-
 
     results, err := f.db.Query(combinedFinal)
     if err != nil {

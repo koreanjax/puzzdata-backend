@@ -24,6 +24,8 @@ const EVO_SKILL int = 232
 const EVO_SKILL_LOOP int = 233
 const queryAnd string = " AND "
 const queryOr string = " OR "
+const queryWhere string = " WHERE "
+const queryUnion string = " UNION "
 
 
 func (s *Skills) HomeHandler(w http.ResponseWriter, r *http.Request) {
