@@ -34,6 +34,8 @@ const skillTypeBase string = "SELECT DISTINCT skill_id FROM skill s1 INNER JOIN 
 const skillTypeUnionBase string = "SELECT root_id FROM skill_type_%s"
 const skillTypeJoin string = "INNER JOIN (%s) s%s ON s%s.root_id = s%s.root_id"
 const multiSkillQualifyBase string = "SELECT * FROM skill WHERE %s"
+const paramInBase string = "%s IN (%s)"
+const paramColunmn string = "param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8"
 const cardFromSkillBase string = "SELECT c.monster_id, c.name FROM card c INNER JOIN (%s) s ON c.active_skill=s.skill_id WHERE c.name NOT LIKE \"%%*****%%\" AND c.name NOT LIKE \"%%????%%\""
 const multiSkillBase string = "SELECT c1.monster_id, c1.name FROM card c1 INNER JOIN (SELECT skill_id FROM skill WHERE (%s)) s1 ON c1.active_skill=s1.skill_id WHERE c1.name NOT LIKE \"%%*****%%\" AND c1.name NOT LIKE \"%%????%%\""
 const singularMultiMerge string = "SELECT monster_id, name FROM ((%s) UNION (%s)) as c2 ORDER BY monster_id"
@@ -156,7 +158,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     query := r.URL.Query()
 
     // Check the query from frontend
-    // f.l.Println(query)
+    f.l.Println(query)
 
     attrQuery := make([]string, 0)
 
@@ -338,18 +340,75 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                     // Split by - to separate the part from its parameters
                     skillCondition := strings.Split(skillType, "-")
                     paramArray := make([]string, 0)
-                    typeFilter := fmt.Sprintf(skillTypeUnionBase, skillCondition[0])
+                    correctedSkillType, _ := strconv.Atoi(skillCondition[0])
+                    if (correctedSkillType > 1000) {
+                        correctedSkillType -= 1000
+                    }
+                    typeFilter := fmt.Sprintf(skillTypeUnionBase, strconv.Itoa(correctedSkillType))
 
                     // If skill part has parameters, add that as a condition for the query
                     if len(skillCondition) > 1 {
 
                         paramSplit := strings.Split(skillCondition[1], ",")
                         for index, param := range paramSplit {
-
+                            if (index > 7) {
+                                continue;
+                            }
                             // If *, it can be any so skip to the next parameter to check
                             if param == "*" {
                                 continue;
                             }
+
+                            if (skillCondition[0] == "1071") {
+                                paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn)
+                                paramArray = append(paramArray, paramFilter)
+                                continue;
+                            }
+
+                            if (correctedSkillType == 141) {
+                                if (index == 1) {
+                                    paramFilter := "param_2 & " + param
+                                    paramArray = append(paramArray, paramFilter)
+                                    continue;
+                                }
+                                if (index == 2) {
+                                    if (skillCondition[0] == "1141")  {
+                                        paramFilter := "NOT param_3 & " + param
+                                        paramArray = append(paramArray, paramFilter)
+                                        continue;
+                                    } else {
+                                        paramFilter := "param_3 & " + param
+                                        paramArray = append(paramArray, paramFilter)
+                                        continue;
+                                    }
+                                }
+                            }
+
+                            if (correctedSkillType == 208) {
+                                if (index == 1 || index == 4) {
+                                    paramFilter := "param_2 & " + param
+                                    paramArray = append(paramArray, paramFilter)
+                                    continue;
+                                }
+                                if (index == 2 || index == 5) {
+                                    if (skillCondition[0] == "1208") {
+                                        paramFilter := "NOT param_" + strconv.Itoa(index+1) + " & " + param
+                                        paramArray = append(paramArray, paramFilter)
+                                        continue;
+                                    } else {
+                                        paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param
+                                        paramArray = append(paramArray, paramFilter)
+                                        continue;
+                                    }
+                                }
+                            }
+
+                            if (skillCondition[0] == "154") {
+                                paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param + " >= " + param
+                                paramArray = append(paramArray, paramFilter)
+                                continue;
+                            }
+
                             if (index == 2 && skillCondition[0] == "90") {
                                 param_2 := paramArray[len(paramArray)-1]
                                 paramArray = removeLast(paramArray)
@@ -364,6 +423,39 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                             }
                             paramFilter := "param_" + strconv.Itoa(index+1) + param
                             paramArray = append(paramArray, paramFilter)
+                        }
+                        if (skillCondition[0] == "71") {
+                            if (len(paramSplit) < 8) {
+                                paramFilter := "param_" + strconv.Itoa(len(paramSplit) + 1) + "=-1"
+                                paramArray = append(paramArray, paramFilter)
+                            }
+                        }
+
+                        if (correctedSkillType == 141) {
+                            if len(paramArray) < 2 {
+                                if (skillCondition[0] == "1141")  {
+                                    paramFilter := "NOT param_2 & param_3"
+                                    paramArray = append(paramArray, paramFilter)
+                                } else {
+                                    paramFilter := "param_2 & param_3"
+                                    paramArray = append(paramArray, paramFilter)
+                                }
+                            }
+                        }
+                        if (correctedSkillType == 208) {
+                            if len(paramArray) < 2 {
+                                if (skillCondition[0] == "1208")  {
+                                    paramFilter := "NOT param_2 & param_3"
+                                    paramArray = append(paramArray, paramFilter)
+                                    paramFilter = "NOT param_5 & param_6"
+                                    paramArray = append(paramArray, paramFilter)
+                                } else {
+                                    paramFilter := "param_2 & param_3"
+                                    paramArray = append(paramArray, paramFilter)
+                                    paramFilter = "param_5 & param_6"
+                                    paramArray = append(paramArray, paramFilter)
+                                }
+                            }
                         }
                     }
 
@@ -415,7 +507,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // f.l.Println(combinedFinal)
+    f.l.Println(combinedFinal)
 
     // skillResults := make([]models.SkillResults,0)
 
