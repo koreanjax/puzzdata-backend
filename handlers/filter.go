@@ -359,6 +359,39 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                                 continue;
                             }
 
+                            if (skillCondition[0] == "1249") {
+                                if (index == 1) {
+                                    paramFilter := "param_2 & " + param + " = " + param
+                                    paramArray = append(paramArray, paramFilter)
+                                    continue;
+                                }
+                            }
+
+                            if (skillCondition[0] == "1152" || skillCondition[0] == "1190" || skillCondition[0] == "1140") {
+                                if (index == 0) {
+                                    paramFilter := "param_1 & " + param + " = " + param
+                                    paramArray = append(paramArray,paramFilter)
+                                    continue;
+                                }
+                            }
+
+                            if (skillCondition[0] == "127" || skillCondition[0] == "128" || skillCondition[0] == "176") {
+                                if (index == 5) {
+                                    paramFilter := "param_" + strconv.Itoa(index+1) + param
+                                    paramArray = append(paramArray,paramFilter)
+                                    continue;
+                                }
+                                if (skillCondition[0] == "127") {
+                                    paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param
+                                    paramArray = append(paramArray,paramFilter)
+                                    continue;
+                                } else {
+                                    paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param + " = " + param
+                                    paramArray = append(paramArray,paramFilter)
+                                    continue;
+                                }
+                            }
+
                             if (skillCondition[0] == "1071") {
                                 paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn)
                                 paramArray = append(paramArray, paramFilter)
