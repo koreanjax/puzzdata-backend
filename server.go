@@ -52,5 +52,8 @@ func main() {
 
     handler := cors.Default().Handler(r)
 
-    log.Fatal(http.ListenAndServe(":8080", handler))
+    err = http.ListenAndServe("[::]:8080", handler)
+    if err != nil {
+        log.Fatalf("ListenAndServe failed: %v", err)
+    }
 }

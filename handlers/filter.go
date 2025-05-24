@@ -36,6 +36,9 @@ const skillTypeJoin string = "INNER JOIN (%s) s%s ON s%s.root_id = s%s.root_id"
 const multiSkillQualifyBase string = "SELECT * FROM skill WHERE %s"
 const paramInBase string = "%s IN (%s)"
 const paramColunmn string = "param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8"
+const paramColunmn156 string = "param_2, param_3, param_4"
+const paramColunmn168 string = "param_2, param_3, param_4, param_5, param_6, param_7"
+const paramColunmn231 string = "param_2, param_3, param_4, param_5, param_6"
 const cardFromSkillBase string = "SELECT c.monster_id, c.name FROM card c INNER JOIN (%s) s ON c.active_skill=s.skill_id WHERE c.name NOT LIKE \"%%*****%%\" AND c.name NOT LIKE \"%%????%%\""
 const multiSkillBase string = "SELECT c1.monster_id, c1.name FROM card c1 INNER JOIN (SELECT skill_id FROM skill WHERE (%s)) s1 ON c1.active_skill=s1.skill_id WHERE c1.name NOT LIKE \"%%*****%%\" AND c1.name NOT LIKE \"%%????%%\""
 const singularMultiMerge string = "SELECT monster_id, name FROM ((%s) UNION (%s)) as c2 ORDER BY monster_id"
@@ -338,7 +341,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                 for _, skillType := range skillTypeParam {
 
                     // Split by - to separate the part from its parameters
-                    skillCondition := strings.Split(skillType, "-")
+                    skillCondition := strings.Split(skillType, "~")
                     paramArray := make([]string, 0)
                     correctedSkillType, _ := strconv.Atoi(skillCondition[0])
                     if (correctedSkillType > 1000) {
@@ -359,43 +362,34 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                                 continue;
                             }
 
-                            if (skillCondition[0] == "1249") {
-                                if (index == 1) {
-                                    paramFilter := "param_2 & " + param + " = " + param
+                            if (skillCondition[0] == "1071") {
+                                paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn)
+                                paramArray = append(paramArray, paramFilter)
+                                continue;
+                            }
+
+                            if (skillCondition[0] == "156") {
+                                if (index > 0 && index < 4) {
+                                    paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn156)
                                     paramArray = append(paramArray, paramFilter)
                                     continue;
                                 }
                             }
 
-                            if (skillCondition[0] == "1152" || skillCondition[0] == "1190" || skillCondition[0] == "1140") {
-                                if (index == 0) {
-                                    paramFilter := "param_1 & " + param + " = " + param
-                                    paramArray = append(paramArray,paramFilter)
+                            if (skillCondition[0] == "168") {
+                                if (index > 0 && index < 7) {
+                                    paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn168)
+                                    paramArray = append(paramArray, paramFilter)
                                     continue;
                                 }
                             }
 
-                            if (skillCondition[0] == "127" || skillCondition[0] == "128" || skillCondition[0] == "176") {
-                                if (index == 5) {
-                                    paramFilter := "param_" + strconv.Itoa(index+1) + param
-                                    paramArray = append(paramArray,paramFilter)
+                            if (skillCondition[0] == "231") {
+                                if (index > 0 && index < 6) {
+                                    paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn231)
+                                    paramArray = append(paramArray, paramFilter)
                                     continue;
                                 }
-                                if (skillCondition[0] == "127") {
-                                    paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param
-                                    paramArray = append(paramArray,paramFilter)
-                                    continue;
-                                } else {
-                                    paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param + " = " + param
-                                    paramArray = append(paramArray,paramFilter)
-                                    continue;
-                                }
-                            }
-
-                            if (skillCondition[0] == "1071") {
-                                paramFilter := fmt.Sprintf(paramInBase, param, paramColunmn)
-                                paramArray = append(paramArray, paramFilter)
-                                continue;
                             }
 
                             if (correctedSkillType == 141) {
@@ -436,24 +430,6 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
                                 }
                             }
 
-                            if (skillCondition[0] == "154") {
-                                paramFilter := "param_" + strconv.Itoa(index+1) + " & " + param + " >= " + param
-                                paramArray = append(paramArray, paramFilter)
-                                continue;
-                            }
-
-                            if (index == 2 && skillCondition[0] == "90") {
-                                param_2 := paramArray[len(paramArray)-1]
-                                paramArray = removeLast(paramArray)
-                                paramFilter := "param_" + strconv.Itoa(index+1) + param
-                                paramArray = append(paramArray, param_2 + queryOr + paramFilter)
-                                continue;
-                            }
-                            if (index ==2 && skillCondition[0] == "258") {
-                                paramFilter := "param_3 & " + param
-                                paramArray = append(paramArray, paramFilter)
-                                continue;
-                            }
                             paramFilter := "param_" + strconv.Itoa(index+1) + param
                             paramArray = append(paramArray, paramFilter)
                         }
