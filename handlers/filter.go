@@ -5,6 +5,7 @@ import (
     "net/http"
     "fmt"
     "encoding/json"
+    "unicode"
     "strings"
     "strconv"
     "puzzdata-backend/models"
@@ -141,6 +142,16 @@ func removeLast(slice []string) []string {
     return slice
 }
 
+func removeAlphabets(input string) string {
+    var builder strings.Builder
+    for _, r := range input {
+        if !unicode.IsLetter(r) {
+            builder.WriteRune(r)
+        }
+    }
+    return builder.String()
+}
+
 /*
 Main filter handler for now. It uses 3 different tables to search thoroughly.
 
@@ -165,7 +176,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
 
     attrQuery := make([]string, 0)
 
-    attributes := query.Get("attrs")
+    attributes := removeAlphabets(query.Get("attrs"))
     attributeSplit := strings.Split(attributes, "|")
 
     // Outer for loop is for each type of attribute (main, sub, third)
@@ -202,7 +213,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     typeQuery := ""
-    cardTypes := query.Get("types")
+    cardTypes := removeAlphabets(query.Get("types"))
 
     // Because types can be in 6 possible combinations, check for all 6 combinations
     // if type filtering is specified. If only one type is requests, it only needs to
@@ -256,7 +267,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
 
     rarityFilter := make([]string, 0)
 
-    rarity := query.Get("rarity")
+    rarity := removeAlphabets(query.Get("rarity"))
     raritySplit := strings.Split(rarity, ",")
 
     // Unlike types, rarity is always an OR condition since one card cannot
@@ -286,7 +297,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     attrTableQueryFinal = attrTableQueryFinal + attrTableQuery + ")"
 
     awknsQuery := make([]string, 0)
-    awakenings := query.Get("awkns")
+    awakenings := removeAlphabets(query.Get("awkns"))
 
     // Query contains the specific awakening in frontend number that needs to be converted
     // to backend number. Query also contains the count for each awakening so this
@@ -320,7 +331,7 @@ func (f *Filter) FilterHandler(w http.ResponseWriter, r *http.Request) {
     }
     
     skillQuery := make([]string, 0)
-    skillType := query.Get("skill")
+    skillType := removeAlphabets(query.Get("skill"))
     skillFilter := ""
 
     // Very annoying to deal with due to skill combos and skill evos.
